@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest(classes = SpringappApplication.class)
-22222222222222@AutoConfigureMockMvc
+@AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
 public class SpringApplicationTests {
 
