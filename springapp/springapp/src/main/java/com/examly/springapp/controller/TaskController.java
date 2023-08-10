@@ -53,6 +53,7 @@ public class TaskController {
         if(allTask !=null){
             for(Task task : allTask){
                 if(task.getTaskHolderName().equals(holderName)){
+                    //taskRepository.deleteById(task.getId());
                     return new ResponseEntity<>(task,HttpStatus.ACCEPTED);
                 }
             }
