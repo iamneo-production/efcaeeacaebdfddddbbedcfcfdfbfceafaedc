@@ -1,13 +1,7 @@
-package com.examly.springapp;
+package com.examly.springapp.repository;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.examly.springapp.model.*;
+import org.springframework.data.repository.CrudRepository;
 
-@SpringBootApplication
-public class SpringappApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(SpringappApplication.class, args);
-	}
-
+public interface TaskRepository extends CrudRepository<Task,Long> {
 }

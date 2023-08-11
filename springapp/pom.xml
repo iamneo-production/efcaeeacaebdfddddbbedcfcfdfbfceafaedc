@@ -1,70 +1,82 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.examly</groupId>
-	<artifactId>springapp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>springapp</name>
-	<description>Demo project for Spring Boot</description>
-	<properties>
-		<java.version>11</java.version>
-	</properties>
-	<dependencies>z
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+package com.examly.springapp.controller;
 
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-           <groupId>org.mockito</groupId>
-           <artifactId>mockito-core</artifactId>
-        </dependency>
-	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+import com.examly.springapp.repository.*;
+import com.examly.springapp.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-</project>
+import java.util.List;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/")
+public class TaskController {
+
+    @Autowired
+    TaskRepository taskRepository;
+
+
+    @PostMapping("/saveTask")
+    public ResponseEntity<?> saveTask(@RequestBody Task task){
+        return new ResponseEntity<>(taskRepository.save(task), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/allTasks")
+    public ResponseEntity<?> allTasks(){
+        return new ResponseEntity<>(taskRepository.findAll(),HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/deleteTask/{taskId}")
+    public ResponseEntity<?> deleteById(@PathVariable String taskId){
+        List<Task> allTask = (List<Task>) taskRepository.findAll();
+
+        if(allTask !=null){
+            for(Task task : allTask){
+                if(task.getTaskId().equals(taskId)){
+                    taskRepository.deleteById(task.getId());
+                    return new ResponseEntity<>("Task with specified id got deleted",HttpStatus.ACCEPTED);
+                }
+            }
+        }
+
+        return  new ResponseEntity<>("Task with specified id not found",HttpStatus.ACCEPTED);
+    }
+
+
+    @GetMapping("/getTask/{holderName}")
+    public ResponseEntity<?> deleteByHolderName(@PathVariable String holderName){
+        List<Task> allTask = (List<Task>) taskRepository.findAll();
+
+        if(allTask !=null){
+            for(Task task : allTask){
+                if(task.getTaskHolderName().equals(holderName)){
+                    //taskRepository.deleteById(task.getId());
+                    return new ResponseEntity<>(task,HttpStatus.ACCEPTED);
+                }
+            }
+        }
+
+        return  new ResponseEntity<>("Task with specified holder name not found",HttpStatus.ACCEPTED);
+    }
+
+
+    @GetMapping("/changeStatus/{taskId}")
+    public ResponseEntity<?> changeStatus(@PathVariable String taskId){
+        List<Task> allTask = (List<Task>) taskRepository.findAll();
+
+        if(allTask !=null){
+            for(Task task : allTask){
+                if(task.getTaskId().equals(taskId)){
+                    task.setTaskStatus("changed");
+                    return new ResponseEntity<>(task,HttpStatus.ACCEPTED);
+                }
+            }
+        }
+
+        return  new ResponseEntity<>("Task with specified Task Id not found",HttpStatus.ACCEPTED);
+    }
+
+}

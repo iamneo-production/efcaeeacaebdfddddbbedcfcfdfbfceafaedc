@@ -22,7 +22,6 @@ public class Task {
 
 
     public Task() {
-        //task
     }
 
     public long getId() {
